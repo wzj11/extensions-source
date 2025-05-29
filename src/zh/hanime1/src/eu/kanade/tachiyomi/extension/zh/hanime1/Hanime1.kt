@@ -83,13 +83,19 @@ class Hanime1 : ParsedHttpSource() {
         return brief?.select(":containsOwn($key)")?.select("div.no-select")?.text()
     }
 
+    private fun getDocumentViaOkHttp(url: String): Document {
+        val request = GET(url)
+        val response = client.newCall(request).execute()
+        return response.asJsoup()
+    }
+    
     override fun pageListParse(document: Document): List<Page> {
         val currentImage = document.select("img#current-page-image")
         // val dataExtension = currentImage.attr("data-extension")
         val dataPrefix = currentImage.attr("data-prefix")
         val pageSize = document.select(".comic-show-content-nav").attr("data-pages").toInt()
         val originUrl = document.select("div.no-select.comic-show-content-nav").select("a")[0].attr("href")
-        val newdocu = Jsoup.connect(originUrl).get()
+        val newdocu = getDocumentViaOkHttp(originUrl)
         val mangaList = newdocu.select("div.comics-panel-margin.comics-panel-margin-top.comics-panel-padding.comics-thumbnail-wrapper.comic-rows-wrapper").select("img")
         // val imgSrc = currentImage.attr("src")
         val extList = mangaList.map { "." + it.attr("srcset").substringAfterLast(".") }
