@@ -84,11 +84,12 @@ class Hanime1 : ParsedHttpSource() {
 
     override fun pageListParse(document: Document): List<Page> {
         val currentImage = document.select("img#current-page-image")
-        val dataExtension = currentImage.attr("data-extension")
-        val dataPrefix = currentImage.attr("data-prefix")
+//        val dataExtension = currentImage.attr("data-extension")
+//        val dataPrefix = currentImage.attr("data-prefix")
         val pageSize = document.select(".comic-show-content-nav").attr("data-pages").toInt()
+        val imgSrc = currentImage.attr("src")
         return List(pageSize) { index ->
-            Page(index, imageUrl = "$dataPrefix${index + 1}.$dataExtension")
+            Page(index, imageUrl = "$imgSrc")
         }
     }
 
