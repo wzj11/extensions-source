@@ -10,9 +10,10 @@ import eu.kanade.tachiyomi.util.asJsoup
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.Request
 import okhttp3.Response
+import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
-import org.jsoup.Jsoup
+
 
 class Hanime1 : ParsedHttpSource() {
     override val baseUrl: String
