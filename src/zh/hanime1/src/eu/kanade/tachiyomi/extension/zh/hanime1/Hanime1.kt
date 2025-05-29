@@ -14,7 +14,6 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 
-
 class Hanime1 : ParsedHttpSource() {
     override val baseUrl: String
         get() = "https://hanime1.me"
