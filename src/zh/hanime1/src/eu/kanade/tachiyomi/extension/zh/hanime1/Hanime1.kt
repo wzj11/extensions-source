@@ -12,6 +12,7 @@ import okhttp3.Request
 import okhttp3.Response
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
+import org.jsoup.Jsoup
 
 class Hanime1 : ParsedHttpSource() {
     override val baseUrl: String
@@ -82,14 +83,20 @@ class Hanime1 : ParsedHttpSource() {
         return brief?.select(":containsOwn($key)")?.select("div.no-select")?.text()
     }
 
+  
+    
     override fun pageListParse(document: Document): List<Page> {
         val currentImage = document.select("img#current-page-image")
-//        val dataExtension = currentImage.attr("data-extension")
-//        val dataPrefix = currentImage.attr("data-prefix")
+        // val dataExtension = currentImage.attr("data-extension")
+        val dataPrefix = currentImage.attr("data-prefix")
         val pageSize = document.select(".comic-show-content-nav").attr("data-pages").toInt()
-        val imgSrc = currentImage.attr("src")
+        val originUrl = document.select("div.no-select.comic-show-content-nav").select("a")[0].attr("href")
+        val newdocu = Jsoup.connect(originUrl).get()
+        val mangaList = newdocu.select("div.comics-panel-margin.comics-panel-margin-top.comics-panel-padding.comics-thumbnail-wrapper.comic-rows-wrapper").select("img")
+        // val imgSrc = currentImage.attr("src")
+        val extList = mangaList.map{"." + it.attr("srcset").substringAfterLast(".")}
         return List(pageSize) { index ->
-            Page(index, imageUrl = "$imgSrc")
+            Page(index, imageUrl = "$dataPrefix${index + 1}${extList[index]}")
         }
     }
 
