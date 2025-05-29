@@ -97,7 +97,7 @@ class Hanime1 : ParsedHttpSource() {
         val newdocu = getDocumentViaOkHttp(originUrl)
         val mangaList = newdocu.select("div.comics-panel-margin.comics-panel-margin-top.comics-panel-padding.comics-thumbnail-wrapper.comic-rows-wrapper").select("img")
         // val imgSrc = currentImage.attr("src")
-        val extList = mangaList.map { "." + it.attr("srcset").substringAfterLast(".") }
+        val extList = mangaList.map { "." + it.attr("data-srcset").substringAfterLast(".") }
         return List(pageSize) { index ->
             Page(index, imageUrl = "$dataPrefix${index + 1}${extList[index]}")
         }
