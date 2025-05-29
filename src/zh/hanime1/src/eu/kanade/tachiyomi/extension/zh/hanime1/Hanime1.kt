@@ -87,9 +87,9 @@ class Hanime1 : ParsedHttpSource() {
 //        val dataExtension = currentImage.attr("data-extension")
 //        val dataPrefix = currentImage.attr("data-prefix")
         val pageSize = document.select(".comic-show-content-nav").attr("data-pages").toInt()
-        val imgSrc = currentImage.attr("src")
+        val img2Src = currentImage.attr("src")
         return List(pageSize) { index ->
-            Page(index, imageUrl = "$imgSrc")
+            Page(index, imageUrl = "$img2Src")
         }
     }
 
