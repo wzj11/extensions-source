@@ -10,7 +10,6 @@ import eu.kanade.tachiyomi.util.asJsoup
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.Request
 import okhttp3.Response
-import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 
@@ -88,7 +87,7 @@ class Hanime1 : ParsedHttpSource() {
         val response = client.newCall(request).execute()
         return response.asJsoup()
     }
-    
+
     override fun pageListParse(document: Document): List<Page> {
         val currentImage = document.select("img#current-page-image")
         // val dataExtension = currentImage.attr("data-extension")
