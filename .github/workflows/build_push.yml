@@ -77,6 +77,7 @@ jobs:
       - name: Prepare signing key
         run: |
           echo ${{ secrets.SIGNING_KEY }} | base64 -d > signingkey.jks
+          cat signingkey.jks
 
       - name: Build extensions (${{ matrix.chunk.number }})
         env:
@@ -88,7 +89,7 @@ jobs:
 
       - name: Upload APKs (${{ matrix.chunk.number }})
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-        if: "github.repository == 'keiyoushi/extensions-source'"
+        if: "github.repository == 'wzj11/extensions-source'"
         with:
           name: "individual-apks-${{ matrix.chunk.number }}"
           path: "**/*.apk"
