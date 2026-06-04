@@ -81,18 +81,21 @@ class Hanime1 : HttpSource() {
     private fun selectInfo(key: String, brief: Element?): String? = brief?.select(":containsOwn($key)")?.select("div.no-select")?.text()
 
     override fun pageListParse(response: Response): List<Page> {
-        val document = response.asJsoup()
+        return response.asJsoup()
+        .select("div.comic-rows-wrapper img")
+        .mapIndexedNotNull { index, img ->
+            val thumbnailUrl = img.attr("data-srcset")
+                .ifBlank { img.attr("srcset") }
+                .takeIf { it.isNotBlank() }
+                ?: return@mapIndexedNotNull null
 
-        return document
-            .select("div.comic-rows-wrapper img")
-            .mapIndexedNotNull { index, img ->
-                val imageUrl = img.attr("data-srcset")
-                    .ifBlank { img.attr("srcset") }
+            val imageUrl = thumbnailUrl.replace(
+                Regex("""t(?=\.[A-Za-z0-9]+(?:\?|$))"""),
+                "",
+            )
 
-                imageUrl
-                    .takeIf { it.isNotBlank() }
-                    ?.let { Page(index, imageUrl = it) }
-            }
+            Page(index, imageUrl = imageUrl)
+        }
     }
 
     override fun popularMangaParse(response: Response): MangasPage {
