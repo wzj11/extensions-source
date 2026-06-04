@@ -89,6 +89,7 @@ class Hanime1 : HttpSource() {
                 val imageUrl = img.attr("data-srcset")
                     .ifBlank { img.attr("srcset") }
                     .takeIf { it.isNotBlank() }
+                    ?.replace("t2.nhentai.net", "i2.nhentai.net")
                     ?.replace(Regex("""t(?=\.[A-Za-z0-9]+(?:\?.*)?$)"""), "")
                     ?: return@mapIndexedNotNull null
 
