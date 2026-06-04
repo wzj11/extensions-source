@@ -88,10 +88,11 @@ class Hanime1 : HttpSource() {
             .mapIndexedNotNull { index, img ->
                 val imageUrl = img.attr("data-srcset")
                     .ifBlank { img.attr("srcset") }
-
-                imageUrl
                     .takeIf { it.isNotBlank() }
-                    ?.let { Page(index, imageUrl = it) }
+                    ?.replace(Regex("""t(?=\.[A-Za-z0-9]+(?:\?.*)?$)"""), "")
+                    ?: return@mapIndexedNotNull null
+
+                Page(index, imageUrl = imageUrl)
             }
     }
 
