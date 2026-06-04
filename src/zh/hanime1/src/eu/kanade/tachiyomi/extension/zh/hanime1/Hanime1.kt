@@ -34,7 +34,7 @@ class Hanime1 : HttpSource() {
                 .map { element ->
                     SChapter.create().apply {
                         val comicUrl = element.select("a").attr("abs:href")
-                        setUrlWithoutDomain("$comicUrl/1")
+                        setUrlWithoutDomain("$comicUrl")
                         val title = element.select("div.comic-rows-videos-title").text()
                         if (requestUrl == comicUrl) {
                             name = "當前：$title"
@@ -46,7 +46,7 @@ class Hanime1 : HttpSource() {
         if (chapterList.isEmpty()) {
             return listOf(
                 SChapter.create().apply {
-                    setUrlWithoutDomain("$requestUrl/1")
+                    setUrlWithoutDomain("$requestUrl")
                     name = "單章節"
                 },
             )
@@ -82,14 +82,17 @@ class Hanime1 : HttpSource() {
 
     override fun pageListParse(response: Response): List<Page> {
         val document = response.asJsoup()
-        val currentImage = document.select("img#current-page-image")
-        // val dataExtension = currentImage.attr("data-extension")
-        // val dataPrefix = currentImage.attr("data-prefix")
-        val pageSize = document.select(".comic-show-content-nav").attr("data-pages").toInt()
-        val imgSrc = currentImage.attr("src")
-        return List(pageSize) { index ->
-            Page(index, imageUrl = "$imgSrc")
-        }
+
+        return document
+            .select("div.comic-rows-wrapper img")
+            .mapIndexedNotNull { index, img ->
+                val imageUrl = img.attr("data-srcset")
+                    .ifBlank { img.attr("srcset") }
+
+                imageUrl
+                    .takeIf { it.isNotBlank() }
+                    ?.let { Page(index, imageUrl = it) }
+            }
     }
 
     override fun popularMangaParse(response: Response): MangasPage {
